@@ -658,6 +658,32 @@ static void *finishedContext = @"finishedContext";
                 delegate:delegate];
 }
 
+
+- (FBRequest*)requestWithGraphPath:(NSString *)graphPath
+                            params:(NSMutableDictionary *)params
+                        httpMethod:(NSString *)httpMethod
+                          callback:(void(^)(FBRequest *request, id result, NSError *error))callback {
+  
+  NSString * fullURL = [kGraphBaseURL stringByAppendingString:graphPath];
+  [params setValue:@"json" forKey:@"format"];
+  [params setValue:kSDK forKey:@"sdk"];
+  [params setValue:kSDKVersion forKey:@"sdk_version"];
+  if ([self isSessionValid]) {
+    [params setValue:self.accessToken forKey:@"access_token"];
+  }
+  
+  [self extendAccessTokenIfNeeded];
+  
+  FBRequest* _request = [FBRequest getRequestWithParams:params
+                                             httpMethod:httpMethod
+                                               callback:callback
+                                             requestURL:fullURL];
+  [_requests addObject:_request];
+  [_request addObserver:self forKeyPath:requestFinishedKeyPath options:0 context:finishedContext];
+  [_request connect];
+  return _request;
+}
+
 /**
  * Generate a UI dialog for the request action.
  *

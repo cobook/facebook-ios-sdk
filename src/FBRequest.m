@@ -37,6 +37,7 @@ static const NSTimeInterval kTimeoutInterval = 180.0;
 @implementation FBRequest
 
 @synthesize delegate = _delegate,
+            callback = _callback,
             url = _url,
             httpMethod = _httpMethod,
             params = _params,
@@ -56,6 +57,7 @@ static const NSTimeInterval kTimeoutInterval = 180.0;
     
     FBRequest* request = [[[FBRequest alloc] init] autorelease];
     request.delegate = delegate;
+    request.callback = nil;
     request.url = url;
     request.httpMethod = httpMethod;
     request.params = params;
@@ -64,6 +66,25 @@ static const NSTimeInterval kTimeoutInterval = 180.0;
     
     return request;
 }
+
+
++ (FBRequest *)getRequestWithParams:(NSMutableDictionary *) params
+                         httpMethod:(NSString *) httpMethod
+                           callback:(void(^)(FBRequest *request, id result, NSError *error))callback
+                         requestURL:(NSString *) url {
+  
+  FBRequest* request = [[[FBRequest alloc] init] autorelease];
+  request.delegate = nil;
+  request.callback = callback;
+  request.url = url;
+  request.httpMethod = httpMethod;
+  request.params = params;
+  request.connection = nil;
+  request.responseText = nil;
+  
+  return request;
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // private
@@ -251,7 +272,9 @@ static const NSTimeInterval kTimeoutInterval = 180.0;
     if ([error code] == kRESTAPIAccessTokenErrorCode) {
         self.sessionDidExpire = YES;
     }
-    if ([_delegate respondsToSelector:@selector(request:didFailWithError:)]) {
+    if (_callback) {
+        _callback(self, nil, error);
+    } else if ([_delegate respondsToSelector:@selector(request:didFailWithError:)]) {
         [_delegate request:self didFailWithError:error];
     }
 }
@@ -269,19 +292,13 @@ static const NSTimeInterval kTimeoutInterval = 180.0;
     id result = [self parseJsonResponse:data error:&error];
     self.error = error;  
     
-    if ([_delegate respondsToSelector:@selector(request:didLoad:)] ||
-        [_delegate respondsToSelector:
-         @selector(request:didFailWithError:)]) {
-            
-            if (error) {
-                [self failWithError:error];
-            } else if ([_delegate respondsToSelector:
-                        @selector(request:didLoad:)]) {
-                [_delegate request:self didLoad:result];
-            }
-            
-        }
-    
+    if (error) {
+        [self failWithError:error];
+    } else if (_callback) {
+        _callback(self, result, nil);
+    } else if ([_delegate respondsToSelector:@selector(request:didLoad:)]) {
+        [_delegate request:self didLoad:result];
+    }
 }
 
 
@@ -337,6 +354,7 @@ static const NSTimeInterval kTimeoutInterval = 180.0;
     [_url release];
     [_httpMethod release];
     [_params release];
+    [_callback release];
     [super dealloc];
 }
 

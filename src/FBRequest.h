@@ -45,6 +45,8 @@ typedef NSUInteger FBRequestState;
 
 @property(nonatomic,assign) id<FBRequestDelegate> delegate;
 
+@property (nonatomic,copy) void (^callback)(FBRequest*, id, NSError*);
+
 /**
  * The URL which will be contacted to execute the request.
  */
@@ -84,6 +86,11 @@ typedef NSUInteger FBRequestState;
                         httpMethod:(NSString *) httpMethod
                           delegate:(id<FBRequestDelegate>)delegate
                         requestURL:(NSString *) url;
+
++ (FBRequest *)getRequestWithParams:(NSMutableDictionary *) params
+                         httpMethod:(NSString *) httpMethod
+                           callback:(void(^)(FBRequest *request, id result, NSError *error))callback
+                         requestURL:(NSString *) url;
 - (BOOL) loading;
 
 - (void) connect;
