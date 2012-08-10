@@ -43,9 +43,11 @@ static const NSTimeInterval kTimeoutInterval = 180.0;
             params = _params,
             connection = _connection,
             responseText = _responseText,
+            responseString = _responseString,
             state = _state,
             sessionDidExpire = _sessionDidExpire,
-            error = _error;
+            error = _error,
+            response = _response;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // class public
@@ -207,12 +209,12 @@ static const NSTimeInterval kTimeoutInterval = 180.0;
  */
 - (id)parseJsonResponse:(NSData *)data error:(NSError **)error {
     
-    NSString* responseString = [[[NSString alloc] initWithData:data
-                                                      encoding:NSUTF8StringEncoding]
+    self.responseString = [[[NSString alloc] initWithData:data
+                                                 encoding:NSUTF8StringEncoding]
                                 autorelease];
-    if ([responseString isEqualToString:@"true"]) {
+    if ([self.responseString isEqualToString:@"true"]) {
         return [NSDictionary dictionaryWithObject:@"true" forKey:@"result"];
-    } else if ([responseString isEqualToString:@"false"]) {
+    } else if ([self.responseString isEqualToString:@"false"]) {
         if (error != nil) {
             *error = [self formError:kGeneralErrorCode
                             userInfo:[NSDictionary
@@ -224,11 +226,11 @@ static const NSTimeInterval kTimeoutInterval = 180.0;
     
     
     SBJSON *jsonParser = [[SBJSON alloc] init];
-    id result = [jsonParser objectWithString:responseString];
+    id result = [jsonParser objectWithString:self.responseString];
     [jsonParser release];
 
     if (result == nil) {
-        return responseString;
+        return self.responseString;
     }
 
     if ([result isKindOfClass:[NSDictionary class]]) {
@@ -355,6 +357,8 @@ static const NSTimeInterval kTimeoutInterval = 180.0;
     [_httpMethod release];
     [_params release];
     [_callback release];
+    [_response release];
+    [_responseString release];
     [super dealloc];
 }
 
@@ -364,10 +368,10 @@ static const NSTimeInterval kTimeoutInterval = 180.0;
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
     _responseText = [[NSMutableData alloc] init];
     
-    NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)response;
+    self.response = (NSHTTPURLResponse*)response;
     if ([_delegate respondsToSelector:
          @selector(request:didReceiveResponse:)]) {
-        [_delegate request:self didReceiveResponse:httpResponse];
+        [_delegate request:self didReceiveResponse:self.response];
     }
 }
 
