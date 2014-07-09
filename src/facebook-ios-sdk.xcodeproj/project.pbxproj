@@ -653,13 +653,6 @@
 			remoteGlobalIDString = 89263C041926CBA500A44711;
 			remoteInfo = FacebookSDKTestHost;
 		};
-		89B220991926C08C00FD98CF /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 85C610871699109000E7BB7D /* OCMock.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D31108AD1828DB8700737925;
-			remoteInfo = OCMockLibTests;
-		};
 		B9CBC52D1525382D0036AA71 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
@@ -1464,7 +1457,6 @@
 				85C610911699109000E7BB7D /* OCMock.framework */,
 				85C610931699109000E7BB7D /* OCMockTests.xctest */,
 				85C610951699109000E7BB7D /* libOCMock.a */,
-				89B2209A1926C08C00FD98CF /* OCMockLibTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -2078,7 +2070,7 @@
 		85C610931699109000E7BB7D /* OCMockTests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			path = OCMockTests.xctest;
+			path = OCMockTests.octest;
 			remoteRef = 85C610921699109000E7BB7D /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -2087,13 +2079,6 @@
 			fileType = archive.ar;
 			path = libOCMock.a;
 			remoteRef = 85C610941699109000E7BB7D /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		89B2209A1926C08C00FD98CF /* OCMockLibTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = OCMockLibTests.xctest;
-			remoteRef = 89B220991926C08C00FD98CF /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -2607,6 +2592,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 892B1FA11926A84100E61379 /* FacebookSDK-Project-Debug.xcconfig */;
 			buildSettings = {
+				ONLY_ACTIVE_ARCH = NO;
 			};
 			name = Debug;
 		};
@@ -2614,6 +2600,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 892B1FA21926A84100E61379 /* FacebookSDK-Project-Release.xcconfig */;
 			buildSettings = {
+				ONLY_ACTIVE_ARCH = NO;
 			};
 			name = Release;
 		};
@@ -2635,6 +2622,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 8984B687192E746E0008D347 /* FacebookSDK-Project-Release-64.xcconfig */;
 			buildSettings = {
+				ONLY_ACTIVE_ARCH = NO;
 			};
 			name = Release64;
 		};
@@ -2663,6 +2651,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 8984B686192E746E0008D347 /* FacebookSDK-Project-Debug-64.xcconfig */;
 			buildSettings = {
+				ONLY_ACTIVE_ARCH = NO;
 			};
 			name = Debug64;
 		};
