@@ -35,6 +35,8 @@
 
 @implementation FBShareDialogParams
 
+@synthesize description = _description;
+
 - (void)dealloc
 {
     [_link release];
